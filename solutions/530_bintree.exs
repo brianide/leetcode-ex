@@ -7,20 +7,12 @@ defmodule Solution do
     |> Enum.min()
   end
 
-  def traverse(root), do: traverse([root], MapSet.new())
-  def traverse([], set), do: Enum.sort(set)
+  def traverse(root), do: traverse([], root)
+  def traverse(list, nil), do: list
 
-  def traverse([root | stack], set) do
-    if not root.val in set do
-      stack =
-        [root.right, root.left]
-        |> Enum.filter(&(&1 != nil))
-        |> Enum.reduce(stack, &([&1 | &2]))
-
-      set = MapSet.put(set, root.val)
-      traverse(stack, set)
-    else
-      traverse(stack, set)
-    end
+  def traverse(list, root) do
+    traverse(list, root.right)
+    |> then(&([root.val | &1]))
+    |> traverse(root.left)
   end
 end
